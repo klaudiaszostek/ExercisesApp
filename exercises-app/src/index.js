@@ -2,7 +2,6 @@ const { app, Menu, BrowserWindow, ipcMain } = require("electron");
 const path = require("node:path");
 const db = require("./db");
 
-// IPC handlers
 ipcMain.handle("add-workout", (_, { date, day, type }) => {
   db.addWorkout({ date, day, type });
 });
@@ -15,7 +14,6 @@ ipcMain.handle("open-workout-window", () => {
   createWorkoutWindow();
 });
 
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
@@ -31,7 +29,6 @@ const createWindow = () => {
   });
 
   mainWindow.loadFile(path.join(__dirname, "index.html"));
-  // mainWindow.webContents.openDevTools();
 };
 
 const createWorkoutWindow = () => {
