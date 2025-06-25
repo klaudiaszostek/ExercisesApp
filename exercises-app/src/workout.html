@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Today's Workout</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div id="timer" class="timer">00:00</div>
+
+    <h2>💪 Today's Workout</h2>
+    <div id="workoutContainer">Loading...</div>
+    <script src="workoutRenderer.js"></script>
+    
+  </body>
+  <script>
+    let startTime = Date.now();
+  
+    function updateTimer() {
+      const now = Date.now();
+      const elapsed = Math.floor((now - startTime) / 1000);
+  
+      const minutes = String(Math.floor(elapsed / 60)).padStart(2, '0');
+      const seconds = String(elapsed % 60).padStart(2, '0');
+  
+      document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+    }
+  
+    setInterval(updateTimer, 1000);
+  </script>
+  
+</html>

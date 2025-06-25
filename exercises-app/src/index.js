@@ -11,8 +11,9 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    icon: path.join(__dirname, "icon.ico"),
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, "preload.js")
     },
   });
 
@@ -38,22 +39,7 @@ app.whenReady().then(() => {
   });
   const menuTemplate = [
     {
-      label: "File",
-      submenu: [
-        { label: "Open", click: () => console.log("Open clicked") },
-        { label: "Save", click: () => console.log("Save clicked") },
-        { type: "separator" },
-        { role: "quit" },
-      ],
-    },
-    {
-      label: "Custom",
-      submenu: [
-        {
-          label: "Say Hello",
-          click: () => console.log("Hello from Electron!"),
-        },
-      ],
+      role: "quit",
     },
   ];
 
@@ -72,3 +58,22 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+const createWorkoutWindow = () => {
+  const workoutWindow = new BrowserWindow({
+    width: 600,
+    height: 500,
+    title: "Today's Workout",
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+    },
+  });
+
+  workoutWindow.loadFile(path.join(__dirname, "workout.html"));
+};
+
+const { ipcMain } = require("electron");
+
+ipcMain.handle("open-workout-window", () => {
+  createWorkoutWindow();
+});

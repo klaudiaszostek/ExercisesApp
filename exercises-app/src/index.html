@@ -6,12 +6,23 @@
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
-    <h1>💪 Time for training?</h1>
-    <p>The app that makes it easier to combine exercise with studies.</p>
+    <h1>
+      <img src="icon.ico" alt="App Icon" width="90" height="90" /> Time
+      for training?
+    </h1>
     <br />
     <div>
-      <button type="button">Click Me!</button>
+      <button id="startWorkoutBtn">Start today's workout</button>
     </div>
+    <button id="finish-btn" style="margin-top: 1rem">✅ Finish Training</button>
+    <p id="completion-status" class="done-status"></p>
+    <div id="today-workout" class="training-box">
+      <h3>Today's Workout</h3>
+      <ul id="exercise-list">
+        <li>Loading...</li>
+      </ul>
+    </div>
+
     <div>
       <h3>TRAINING PLAN (3-4 days a week)</h3>
       <p></p>
@@ -65,4 +76,99 @@
       </p>
     </div>
   </body>
+  <script src="renderer.js"></script>
+  <script>
+    const workouts = {
+      Monday: [
+        "STRENGTH TRAINING + ABS",
+        "Squats (4x12)",
+        "Deadlift or Hip Thrust (4x10-12)",
+        "Dumbbell Row / Pull-ups (3x10)",
+        "Overhead Press (3x10)",
+        "Plank (3x45 sec)",
+        "Leg Raises (3x15)",
+        "Russian Twists (3x20)",
+      ],
+      Tuesday: [
+        "CARDIO",
+        "Fast walk – 8–10k steps",
+        "OR Intervals: 30s sprint + 30s jog x10",
+      ],
+      Wednesday: [
+        "STRENGTH TRAINING + ABS",
+        "Squats (4x12)",
+        "Deadlift or Hip Thrust (4x10-12)",
+        "Dumbbell Row / Pull-ups (3x10)",
+        "Overhead Press (3x10)",
+        "Plank (3x45 sec)",
+        "Leg Raises (3x15)",
+        "Russian Twists (3x20)",
+      ],
+      Thursday: ["REST OR WALK"],
+      Friday: [
+        "STRENGTH TRAINING + ABS",
+        "Squats (4x12)",
+        "Deadlift or Hip Thrust (4x10-12)",
+        "Dumbbell Row / Pull-ups (3x10)",
+        "Overhead Press (3x10)",
+        "Plank (3x45 sec)",
+        "Leg Raises (3x15)",
+        "Russian Twists (3x20)",
+      ],
+      Saturday: ["OPTIONAL CARDIO", "BIKE / RUN / WALK"],
+      Sunday: ["REST"],
+    };
+
+    function showTodayWorkout() {
+      const days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      const today = days[new Date().getDay()];
+      const list = document.getElementById("exercise-list");
+
+      list.innerHTML = "";
+      workouts[today].forEach((ex) => {
+        const li = document.createElement("li");
+        li.textContent = ex;
+        list.appendChild(li);
+      });
+
+      // Check if already marked as completed today
+      const done = localStorage.getItem("done-" + today);
+      if (done === "true") {
+        document.getElementById("completion-status").textContent =
+          "✅ Completed!";
+      }
+    }
+
+    function finishWorkout() {
+      const days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      const today = days[new Date().getDay()];
+      localStorage.setItem("done-" + today, "true");
+
+      document.getElementById("completion-status").textContent =
+        "✅ Completed!";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      showTodayWorkout();
+      document
+        .getElementById("finish-btn")
+        .addEventListener("click", finishWorkout);
+    });
+  </script>
 </html>
