@@ -7,22 +7,24 @@
   </head>
   <body>
     <h1>
-      <img src="icon.ico" alt="App Icon" width="90" height="90" /> Time
-      for training?
+      <img src="icon.ico" alt="App Icon" width="90" height="90" /> Time for
+      training?
+      <br />
+      <br />
+      <div>
+        <button id="startWorkoutBtn">Start today's workout</button>
+      </div>
+      <button id="finish-btn" style="margin-top: 1rem">Mark as done</button>
+      <br />
+      <p id="completion-status" class="done-status"></p>
     </h1>
-    <br />
-    <div>
-      <button id="startWorkoutBtn">Start today's workout</button>
-    </div>
-    <button id="finish-btn" style="margin-top: 1rem">✅ Finish Training</button>
-    <p id="completion-status" class="done-status"></p>
     <div id="today-workout" class="training-box">
       <h3>Today's Workout</h3>
       <ul id="exercise-list">
         <li>Loading...</li>
       </ul>
     </div>
-
+    <br />
     <div>
       <h3>TRAINING PLAN (3-4 days a week)</h3>
       <p></p>
@@ -161,7 +163,7 @@
       localStorage.setItem("done-" + today, "true");
 
       document.getElementById("completion-status").textContent =
-        "✅ Completed!";
+        "✅ Completed for today!";
     }
 
     document.addEventListener("DOMContentLoaded", () => {
