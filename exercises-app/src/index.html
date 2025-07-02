@@ -8,9 +8,7 @@
   <body>
     <h1>
       <img src="icon.ico" alt="App Icon" width="90" height="90" /> Time for
-      training?
-      <br />
-      <br />
+      training? <br /><br />
       <div>
         <button id="startWorkoutBtn">Start today's workout</button>
       </div>
@@ -18,16 +16,24 @@
       <br />
       <p id="completion-status" class="done-status"></p>
     </h1>
+
     <div id="today-workout" class="training-box">
       <h3>Today's Workout</h3>
       <ul id="exercise-list">
         <li>Loading...</li>
       </ul>
     </div>
+
+    <div id="history-box" class="training-box">
+      <h3>Workout History</h3>
+      <ul id="history-list">
+        <li>Loading...</li>
+      </ul>
+    </div>
+
     <br />
     <div>
       <h3>TRAINING PLAN (3-4 days a week)</h3>
-      <p></p>
       <p>Sample weekly schedule:</p>
       <table>
         <tr>
@@ -64,6 +70,7 @@
         </tr>
       </table>
     </div>
+
     <br />
     <div>
       <h3>How do you reconcile this with your studies?</h3>
@@ -78,6 +85,7 @@
       </p>
     </div>
   </body>
+
   <script src="renderer.js"></script>
   <script>
     const workouts = {
@@ -121,7 +129,7 @@
       Sunday: ["REST"],
     };
 
-    function showTodayWorkout() {
+    function getTodayInfo() {
       const days = [
         "Sunday",
         "Monday",
@@ -131,43 +139,78 @@
         "Friday",
         "Saturday",
       ];
-      const today = days[new Date().getDay()];
-      const list = document.getElementById("exercise-list");
+      const todayIndex = new Date().getDay();
+      const today = days[todayIndex];
+      const date = new Date().toISOString().split("T")[0];
+      return { today, date };
+    }
 
+    function showTodayWorkout() {
+      const { today } = getTodayInfo();
+      const list = document.getElementById("exercise-list");
       list.innerHTML = "";
       workouts[today].forEach((ex) => {
         const li = document.createElement("li");
         li.textContent = ex;
         list.appendChild(li);
       });
+    }
 
-      // Check if already marked as completed today
-      const done = localStorage.getItem("done-" + today);
-      if (done === "true") {
-        document.getElementById("completion-status").textContent =
-          "✅ Completed!";
+    async function loadWorkoutHistory() {
+      const list = document.getElementById("history-list");
+      const history = await window.dbAPI.getWorkouts();
+      list.innerHTML = "";
+
+      if (history.length === 0) {
+        list.innerHTML = "<li>No workouts yet.</li>";
+        return;
+      }
+
+      history.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = `${item.date} (${item.day}) – ${item.type}`;
+        list.appendChild(li);
+      });
+
+      checkIfWorkoutDone(history);
+    }
+
+    function checkIfWorkoutDone(history) {
+      const { today, date } = getTodayInfo();
+      const alreadyDone = history.some((entry) => entry.date === date);
+
+      const finishBtn = document.getElementById("finish-btn");
+      const status = document.getElementById("completion-status");
+
+      if (alreadyDone) {
+        finishBtn.style.display = "none";
+        status.textContent = "✅ Completed!";
+      } else {
+        finishBtn.style.display = "inline-block";
+        status.textContent = "";
       }
     }
 
-    function finishWorkout() {
-      const days = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ];
-      const today = days[new Date().getDay()];
-      localStorage.setItem("done-" + today, "true");
+    async function finishWorkout() {
+      const { today, date } = getTodayInfo();
+      const workoutType = workouts[today][0] || "Unknown";
 
-      document.getElementById("completion-status").textContent =
-        "✅ Completed for today!";
+      const history = await window.dbAPI.getWorkouts();
+      const alreadyDone = history.some((entry) => entry.date === date);
+      if (alreadyDone) return;
+
+      await window.dbAPI.addWorkout({
+        date,
+        day: today,
+        type: workoutType,
+      });
+
+      loadWorkoutHistory();
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       showTodayWorkout();
+      loadWorkoutHistory();
       document
         .getElementById("finish-btn")
         .addEventListener("click", finishWorkout);
