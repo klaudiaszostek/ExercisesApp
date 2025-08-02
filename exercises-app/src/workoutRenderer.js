@@ -73,7 +73,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("workoutContainer");
 
   if (exercises.length === 0) {
-    container.innerHTML = `<p>No training planned for today (${day}).</p>`;
+    container.innerHTML = `<p>No training planned for today.</p>`;
     return;
   }
 
