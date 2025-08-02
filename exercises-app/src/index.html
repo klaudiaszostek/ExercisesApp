@@ -16,6 +16,20 @@
       <br />
       <p id="completion-status" class="done-status"></p>
     </h1>
+    <div id="alternate-workout" class="training-box">
+      <h3>Choose Different Workout</h3>
+      <select id="alternate-select">
+        <option value="">-- Select a day --</option>
+        <option value="Monday">Monday - STRENGTH</option>
+        <option value="Tuesday">Tuesday - CARDIO</option>
+        <option value="Wednesday">Wednesday - STRENGTH</option>
+        <option value="Thursday">Thursday - REST OR WALK</option>
+        <option value="Friday">Friday - STRENGTH</option>
+        <option value="Saturday">Saturday - CARDIO</option>
+        <option value="Sunday">Sunday - REST</option>
+      </select>
+      <button id="use-alternate">Do this one instead</button>
+    </div>
 
     <div id="today-workout" class="training-box">
       <h3>Today's Workout</h3>
@@ -84,8 +98,6 @@
       </p>
     </div>
   </body>
-
-  <script src="renderer.js"></script>
   <script>
     const workouts = {
       Monday: [
@@ -159,6 +171,16 @@
       return { today, date };
     }
 
+    document.getElementById("startWorkoutBtn").addEventListener("click", () => {
+      const { today } = getTodayInfo();
+      currentSelectedDay = today;
+      window.open(
+        `workout.html?day=${today}`,
+        "_blank",
+        "width=700,height=700"
+      );
+    });
+
     function showTodayWorkout() {
       const { today } = getTodayInfo();
       const list = document.getElementById("exercise-list");
@@ -169,6 +191,28 @@
         list.appendChild(li);
       });
     }
+
+    function showWorkoutFor(day) {
+      const list = document.getElementById("exercise-list");
+      list.innerHTML = "";
+      workouts[day].forEach((ex) => {
+        const li = document.createElement("li");
+        li.textContent = ex;
+        list.appendChild(li);
+      });
+    }
+
+    document.getElementById("use-alternate").addEventListener("click", () => {
+      const selectedDay = document.getElementById("alternate-select").value;
+      if (!selectedDay) return;
+      currentSelectedDay = selectedDay;
+      showWorkoutFor(currentSelectedDay);
+      window.open(
+        `workout.html?day=${currentSelectedDay}`,
+        "_blank",
+        "width=700,height=700"
+      );
+    });
 
     async function loadWorkoutHistory() {
       const list = document.getElementById("history-list");
@@ -182,7 +226,7 @@
 
       history.forEach((item) => {
         const li = document.createElement("li");
-        li.textContent = `${item.date} (${item.day}) – ${item.type}`;
+        li.textContent = `${item.date} – ${item.type}`;
         list.appendChild(li);
       });
 
@@ -206,8 +250,9 @@
     }
 
     async function finishWorkout() {
-      const { today, date } = getTodayInfo();
-      const workoutType = workouts[today][0] || "Unknown";
+      const { date, today } = getTodayInfo();
+      const selectedDay = currentSelectedDay || today;
+      const workoutType = workouts[selectedDay][0] || "Unknown";
 
       const history = await window.dbAPI.getWorkouts();
       const alreadyDone = history.some((entry) => entry.date === date);
@@ -215,7 +260,7 @@
 
       await window.dbAPI.addWorkout({
         date,
-        day: today,
+        day: selectedDay,
         type: workoutType,
       });
 
@@ -225,6 +270,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       showTodayWorkout();
       loadWorkoutHistory();
+
       document
         .getElementById("finish-btn")
         .addEventListener("click", finishWorkout);

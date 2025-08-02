@@ -61,17 +61,19 @@ const workoutData = {
   Sunday: [{ name: "REST" }],
 };
 
-const getTodayName = () => {
-  return new Date().toLocaleDateString("en-US", { weekday: "long" });
-};
+function getQueryParam(param) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(param);
+}
+
+const day = getQueryParam("day") || getTodayName();
+const exercises = workoutData[day] || [];
 
 window.addEventListener("DOMContentLoaded", () => {
-  const today = getTodayName();
-  const exercises = workoutData[today] || [];
   const container = document.getElementById("workoutContainer");
 
   if (exercises.length === 0) {
-    container.innerHTML = `<p>No training planned for today.</p>`;
+    container.innerHTML = `<p>No training planned for today (${day}).</p>`;
     return;
   }
 

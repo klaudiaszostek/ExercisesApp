@@ -100,7 +100,7 @@ tr:last-child td {
   border-radius: 8px;
   font-size: 1rem;
   font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
 #today-workout ul {
@@ -160,3 +160,29 @@ tr:last-child td {
   color: #27ae60;
 }
 
+#alternate-select {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  color: #333;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D'16'%20height%3D'16'%20viewBox%3D'0%200%2016%2016'%20xmlns%3D'http%3A//www.w3.org/2000/svg'%3E%3Cpath%20d%3D'M4%206l4%204%204-4'%20stroke%3D'%23666'%20stroke-width%3D'2'%20fill%3D'none'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px 12px;
+}
+
+#alternate-select:hover,
+#alternate-select:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+  outline: none;
+}
